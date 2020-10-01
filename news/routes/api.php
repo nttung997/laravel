@@ -19,5 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('test', function () {
     return $newsTypes = App\Category::find(1)->newsTypes->toJson();
 });
-Route::get('tts', 'TtsController@callApi')->name('callApi');
 

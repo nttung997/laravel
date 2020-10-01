@@ -24,7 +24,7 @@ Route::prefix('admin')->group(function () {
         Route::get('newstypes/{category}','AjaxController@getNewsTypes');
     });
 });
-Route::get('test', function () {
-    echo "123";
-});
+Route::get('tts', 'TtsController@index')->name('ttsGet');
+Route::post('tts', 'TtsController@callApi')->name('ttsPost');
+
 
