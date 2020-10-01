@@ -53,7 +53,7 @@
                         @if ($news->image=="")
                         <p>No Image</p>
                         @else
-                        <p><img width="500px" src="{{url('upload/images/tin-tuc/'.$news->image)}}"></p>
+                        <p><img width="500px" src="{{asset('storage/'.$news->image)}}"></p>
                         <br><label>Delete Image</label>
                         <input type="checkbox" name="deleteImage" value="1">
                         @endif
@@ -73,7 +73,7 @@
                             @endif>Yes
                         </label>
                     </div>
-                    <button type="submit" class="btn btn-default">Category Edit</button>
+                    <button type="submit" class="btn btn-default">News Edit</button>
                     <button type="reset" class="btn btn-default">Reset</button>
                     <form>
             </div>

@@ -7,6 +7,7 @@ use App\News;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class NewsController extends Controller
 {
@@ -61,17 +62,15 @@ class NewsController extends Controller
         $news->hot = $request->hot;
         $news->view = 0;
         $news->news_type_id = $request->news_type_id;
+        $disk = Storage::disk('public');
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
+            $extension = $file->extension();
             if ($extension != 'jpg' && $extension != 'png' && $extension != 'jpeg') {
                 return back()->with('success', 'File type must be jpg, png or jpeg');
             }
-            $news->image = "";
-            $news->save();
-            $name = $news->id . "_" . $file->getClientOriginalName();
-            $file->move("upload/images/tin-tuc", $name);
-            $news->image = $name;
+            $path = $disk->putFile('image', $file);
+            $news->image = $path;
         } else {
             $news->image = "";
         }
@@ -135,19 +134,20 @@ class NewsController extends Controller
         $news->content = $request->content;
         $news->hot = $request->hot;
         $news->news_type_id = $request->news_type_id;
+        $disk = Storage::disk('public');
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
+            $extension = $file->extension();
             if ($extension != 'jpg' && $extension != 'png' && $extension != 'jpeg') {
                 return back()->with('success', 'File type must be jpg, png or jpeg');
             }
-            $name = $news->id . "_" . $file->getClientOriginalName();
-            if ($news->image != "" && file_exists("upload/images/tin-tuc/" . $news->image))  unlink("upload/images/tin-tuc/" . $news->image);
-            $file->move("upload/images/tin-tuc", $name);
-            $news->image = $name;
+            $path = $disk->putFile('image', $file);
+            if ($news->image)
+                $disk->delete($news->image);
+            $news->image = $path;
         } elseif ($request->deleteImage) {
-            if ($news->image != "") {
-                if (file_exists("upload/images/tin-tuc/" . $news->image)) unlink("upload/images/tin-tuc/" . $news->image);
+            if ($news->image) {
+                $disk->delete($news->image);
                 $news->image = "";
             }
         }
@@ -166,4 +166,5 @@ class NewsController extends Controller
         $news->delete();
         return back()->with('success', 'Destroyed');
     }
+    
 }
