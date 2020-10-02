@@ -45,10 +45,10 @@ class TtsController extends Controller
 		// $result['audioContent'] = $disk->get('audio.txt');
 		
         $path = $this->decodeBase64($result['audioContent']);
-        return view('audio',['audio'=>$path]);
+        return view('tts',['audio'=>$path]);
 	}
 	
 	function index(){
-		return view('input');
+		return view('tts');
 	}
 }
