@@ -14,7 +14,8 @@ class ChatController extends Controller
      */
     public function index()
     {
-        //
+        $chats = Chat::all();
+        return view('chats.index',compact('chats'));
     }
 
     /**
@@ -35,7 +36,9 @@ class ChatController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $chat = new Chat(request()->all());
+        $chat->save();
+        return back();
     }
 
     /**
