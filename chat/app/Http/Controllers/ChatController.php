@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Chat;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Events\ChatEvent;
 
 class ChatController extends Controller
 {
@@ -15,7 +17,7 @@ class ChatController extends Controller
     public function index()
     {
         $chats = Chat::all();
-        return view('chats.index',compact('chats'));
+        return view('chats.index', compact('chats'));
     }
 
     /**
@@ -36,8 +38,12 @@ class ChatController extends Controller
      */
     public function store(Request $request)
     {
-        $chat = new Chat(request()->all());
+        $chat = new Chat($request->all());
+        $chat->author = Auth::user()->name;
         $chat->save();
+        event(
+            $e = new ChatEvent($chat)
+        );
         return back();
     }
 

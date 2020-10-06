@@ -20,7 +20,7 @@ Route::get('/', function () {
 
 Route::resource('chats',ChatController::class)->only([
     'index','store'
-]);
+])->middleware('auth');
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
