@@ -16,7 +16,7 @@ class ChatController extends Controller
      */
     public function index()
     {
-        $chats = Chat::all();
+        $chats = Chat::latest()->get();
         return view('chats.index', compact('chats'));
     }
 
