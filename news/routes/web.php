@@ -25,6 +25,5 @@ Route::prefix('admin')->group(function () {
     });
 });
 Route::get('tts', 'TtsController@index')->name('ttsGet');
-Route::post('tts', 'TtsController@callApi')->name('ttsPost');
 
 

@@ -41,11 +41,8 @@ class TtsController extends Controller
         $response = CurlHelper::post($url, json_encode($data), $headers);
 
 		$result = json_decode($response->getBody()->getContents(), true);
-		// $disk = Storage::disk('public');
-		// $result['audioContent'] = $disk->get('audio.txt');
 		
-        $path = $this->decodeBase64($result['audioContent']);
-        return view('tts',['audio'=>$path]);
+        return $this->decodeBase64($result['audioContent']);
 	}
 	
 	function index(){

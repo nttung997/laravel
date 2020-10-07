@@ -1,31 +1,25 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Bootstrap Example</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  </head>
 <body>
-
-  <div class="container" >
-    <form action="{{route('ttsPost')}}" method="POST">
-      @csrf
-      <div class="form-group">
-        <label for="idText">Text</label><br>
-        <input type="text" class="form-control" id="idText" name="text">
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-  </div>
-
-@if(isset($audio))
-<audio controls autoplay hidden>
-  <source src="{{asset('storage/'.$audio)}}" type="audio/wav">
-</audio>
-@endif
+  <form id="myForm">
+    @csrf
+    <input type="text" id="idText" name="text">
+    <button type="submit">submit</button>
+  </form>
+  <div id="audio"></div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js"></script>
+  <script>
+    $(function () {
+      $('#myForm').ajaxForm({
+        url: "{{route('ttsPost')}}",
+        type: 'post',
+        success: function (data) {
+          console.log(data)
+          $("#audio").html("<audio controls autoplay hidden><source src=\"{{asset('storage')}}/" + data + "\" type='audio/wav'></audio>");
+        },
+      });
+    });
+  </script>
 </body>
 </html>
