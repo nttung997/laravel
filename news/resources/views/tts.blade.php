@@ -16,7 +16,7 @@
         type: 'post',
         success: function (data) {
           console.log(data)
-          $("#audio").html("<audio controls autoplay hidden><source src=\"{{asset('storage')}}/" + data + "\" type='audio/wav'></audio>");
+          $("#audio").html("<audio controls autoplay hidden><source src='{{asset('storage')}}/" + data + "' type='audio/wav'></audio>");
         },
       });
     });
