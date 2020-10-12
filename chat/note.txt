@@ -1,0 +1,3 @@
+run nodejs server
+run apache and mysql
+run redis server 
