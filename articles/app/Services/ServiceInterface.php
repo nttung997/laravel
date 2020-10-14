@@ -14,7 +14,7 @@ interface ServiceInterface
 
     public function delete($id);
 
-    public function exist($id);
+    public function exists($id);
 
     public function getRepository();
 

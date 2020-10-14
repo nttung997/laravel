@@ -49,7 +49,7 @@ class UserService extends Service
     public function checkRole($data)
     {
         if (array_key_exists('role_id', $data)) {
-            if (!$this->roleService->exist($data['role_id'])) {
+            if (!$this->roleService->exists($data['role_id'])) {
                 $this->add_error('Role does not exist');
                 return false;
             }

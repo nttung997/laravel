@@ -12,5 +12,5 @@ interface RepositoryInterface
 
     public function find($id);
 
-    public function exist($id);
+    public function exists($id);
 }

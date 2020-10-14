@@ -65,7 +65,7 @@ class Service implements ServiceInterface
     }
 
     // check existence of the record with the given id
-    public function exist($id)
+    public function exists($id)
     {
         return $this->repository->exists($id);
     }

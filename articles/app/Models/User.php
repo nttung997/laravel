@@ -52,7 +52,7 @@ class User extends Authenticatable
 
     public function isEmailExisted($email, $id = null)
     {
-        if ($id)  return $result = Role::where('email', $email)->where('id', '<>', $id)->exists();
-        return $result = Role::where('name', $email)->exists();
+        if ($id)  return $result = User::where('email', $email)->where('id', '<>', $id)->exists();
+        return $result = User::where('email', $email)->exists();
     }
 }

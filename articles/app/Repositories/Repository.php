@@ -46,7 +46,7 @@ class Repository implements RepositoryInterface
     }
 
     // check existence of the record with the given id
-    public function exist($id)
+    public function exists($id)
     {
         return $this->model->exists($id);
     }
