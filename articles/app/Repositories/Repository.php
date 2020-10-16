@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Redis;
 
 class Repository implements RepositoryInterface
 {
@@ -73,5 +74,28 @@ class Repository implements RepositoryInterface
     public function paginate($amount)
     {
         return $this->model->paginate($amount);;
+    }
+
+    public function getCache($key)
+    {
+        return json_decode(Redis::get($key));
+    }
+
+    public function setCache($key, $objects)
+    {
+        $seconds = 60;
+        Redis::setex($key, $seconds, json_encode($objects));
+        return true;
+    }
+
+    public function deleteCache($key)
+    {
+        Redis::del($key);
+        return true;
+    }
+
+    public function checkCache($key)
+    {
+        return Redis::exists($key);
     }
 }

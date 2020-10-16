@@ -29,28 +29,65 @@ class ArticleRepository extends Repository
         return $this->article->allByUserId($userId);
     }
 
-    public function allByUserIdPaginate($userId,$amount)
+    public function allByUserIdPaginate($userId, $amount)
     {
-        return $this->article->allByUserIdPaginate($userId,$amount);
+        return $this->article->allByUserIdPaginate($userId, $amount);
     }
 
     public function all()
     {
-        return $this->article->allWithCache();
+        if (env('CACHE_ENABLE', false)) {
+            $objects = null;
+            $key = Article::MODEL . '_all';
+            if ($this->checkCache($key)) //get object from cache
+            {
+                $objects = $this->getCache($key);
+            } else { //get object and cache 
+                $objects = parent::all();
+                if ($objects) $this->setCache($key, $objects);
+            }
+            return $objects;
+        }
+        return parent::all();
     }
 
     public function find($id)
     {
-        return $this->article->findWithCache($id);
+        if (env('CACHE_ENABLE', false)) {
+            $key = Article::MODEL . '_find_' . $id;
+            if ($this->checkCache($key)) {
+                $object = $this->getCache($key);
+            } else {
+                $object = parent::find($id);
+                if ($object) $this->setCache($key, $object);
+            }
+            return $object;
+        }
+        return parent::find($id);
     }
 
     public function update(array $data, $id)
     {
-        return $this->article->updateWithCache($data,$id);
+        if (env('CACHE_ENABLE', false)) {
+            $result = parent::update($data, $id);
+            if ($result) {
+                $key = Article::MODEL . '_find_' . $id;
+                $this->deleteCache($key);
+            }
+            return $result;
+        }
+        return parent::update($data, $id);
     }
 
     public function delete($id)
     {
-        return $this->model->deleteWithCache($id);
-    }
+        if (env('CACHE_ENABLE',false)) {
+            $result = parent::delete($id);
+            if ($result) {
+                $key = Article::MODEL . '_find_' . $id;
+                $this->deleteCache($key);
+            }
+            return $result;
+        }
+        return parent::delete($id);    }
 }
