@@ -7,69 +7,90 @@ use Illuminate\Support\Facades\Redis;
 
 class Repository implements RepositoryInterface
 {
-    // model property on class instances
     protected $model;
 
-    // Constructor to bind model to repo
     public function __construct(Model $model)
     {
         $this->model = $model;
     }
 
-    // Get all instances of model
     public function all()
     {
+        if (env('CACHE_ENABLE', false)) {
+            $objects = null;
+            $key = $this->model::MODEL . '_all';
+            if ($this->checkCache($key)) {
+                $objects = $this->getCache($key);
+            } else {
+                $objects = $this->model->all();
+                if ($objects) $this->setCache($key, $objects);
+            }
+            return $objects;
+        }
         return $this->model->all();
     }
 
-    // create a new record in the database
     public function create(array $data)
     {
         return $this->model->create($data);
     }
 
-    // update record in the database
-    public function update(array $data, $object)
+    public function update(array $data, $id)
     {
-        return $object->update($data);
+        if (env('CACHE_ENABLE', false)) {
+            $result = $this->model->update($data, $id);
+            if ($result) {
+                $key = $this->model::MODEL . '_find_' . $id;
+                $this->deleteCache($key);
+            }
+            return $result;
+        }
+        return $this->model->update($data, $id);
     }
 
-    // remove record from the database
     public function delete($id)
     {
-        return $this->model->destroy($id);
+        if (env('CACHE_ENABLE', false)) {
+            $result = $this->model->delete($id);
+            if ($result) {
+                $key = $this->model::MODEL . '_find_' . $id;
+                $this->deleteCache($key);
+            }
+            return $result;
+        }
+        return $this->model->delete($id);
     }
 
-    // show the record with the given id
     public function find($id)
     {
-        return $this->model->find($id);
+        if (env('CACHE_ENABLE', false)) {
+            $key = $this->model::MODEL . '_find_' . $id;
+            if ($this->checkCache($key)) {
+                $object = $this->getCache($key);
+            } else {
+                $object = $this->model::find($id);
+                if ($object) $this->setCache($key, $object);
+            }
+            return $object;
+        }
+        return $this->model::find($id);
     }
 
-    // check existence of the record with the given id
     public function exists($id)
     {
         return $this->model->exists($id);
     }
 
-    // Get the associated model
     public function getModel()
     {
         return $this->model;
     }
 
-    // Set the associated model
     public function setModel($model)
     {
         $this->model = $model;
         return $this;
     }
-
-    // Eager load database relationships
-    // public function with($relations)
-    // {
-    //     return $this->model->with($relations);
-    // }
 
     public function paginate($amount)
     {
@@ -83,8 +104,7 @@ class Repository implements RepositoryInterface
 
     public function setCache($key, $objects)
     {
-        $seconds = 60;
-        Redis::setex($key, $seconds, json_encode($objects));
+        Redis::setex($key, env('CACHE_TIME', 60), json_encode($objects));
         return true;
     }
 

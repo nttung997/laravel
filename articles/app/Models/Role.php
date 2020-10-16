@@ -9,6 +9,8 @@ class Role extends Model
 {
     use SoftDeletes;
 
+    const MODEL = 'role';
+
     protected $fillable = [
         'name'
     ];
@@ -18,7 +20,7 @@ class Role extends Model
     }
     public function isNameExisted($name, $id = null)
     {
-        if ($id) return $result = Role::where('name', $name)->where('id', '<>', $id)->exists();
-        return $result = Role::where('name', $name)->exists();
+        if ($id) return Role::where('name', $name)->where('id', '<>', $id)->exists();
+        return Role::where('name', $name)->exists();
     }
 }

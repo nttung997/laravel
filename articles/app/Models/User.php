@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Redis;
 
 class User extends Authenticatable
 {
     use Notifiable;
 
+    const MODEL = 'user';
     const INACTIVE = 0;
     const ACTIVE = 1;
     const DISABLED = 2;
@@ -52,7 +52,7 @@ class User extends Authenticatable
 
     public function isEmailExisted($email, $id = null)
     {
-        if ($id)  return $result = User::where('email', $email)->where('id', '<>', $id)->exists();
-        return $result = User::where('email', $email)->exists();
+        if ($id)  return User::where('email', $email)->where('id', '<>', $id)->exists();
+        return User::where('email', $email)->exists();
     }
 }

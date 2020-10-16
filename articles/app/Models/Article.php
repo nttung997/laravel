@@ -24,19 +24,19 @@ class Article extends Model
 
     public function isTitleExisted($title, $id = null)
     {
-        if ($id) return $result = Article::where('title', $title)->where('id', '<>', $id)->exists();
-        return $result = Article::where('title', $title)->exists();
+        if ($id) return Article::where('title', $title)->where('id', '<>', $id)->exists();
+        return Article::where('title', $title)->exists();
     }
 
     // find all article made by user
     public function allByUserIdPaginate($userId, $amount)
     {
-        return $articles =  Article::where('user_id', $userId)->paginate($amount);
+        return Article::where('user_id', $userId)->paginate($amount);
     }
 
     // find all article made by user
     public function allByUserId($userId)
     {
-        return $articles =  Article::where('user_id', $userId)->get();
+        return Article::where('user_id', $userId)->get();
     }
 }

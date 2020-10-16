@@ -45,10 +45,7 @@ class Service implements ServiceInterface
     // update record in the database
     public function update(array $data, $id)
     {
-        $object = $this->find($id);
-        if (!$object) return false;
-        $respond = $this->repository->update($data,$object);
-        return $respond;
+        return $this->repository->update($data,$id);
     }
 
     // remove record from the database
